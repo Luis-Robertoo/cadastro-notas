@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-main>
+    <v-main style="background-color: grey;">
       <FormularioNotas/>
     </v-main>
   </v-app>
