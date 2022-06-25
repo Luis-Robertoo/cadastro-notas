@@ -1,20 +1,40 @@
 <template>  
-  <div>
-    <h1>Cadastro de Notas</h1>
-    <form ref="formCad">
-      <v-row>
-        <v-col col="3">
-          <input value="text" v-model="form.cnpj" placeholder="CNPJ do estabelecimento">
-        </v-col>
+  
+    <v-form ref="formCad" class="pa-2 ma-2">
+      <v-container>
+        <v-card-title :class="['size-5rem']">
+          Cadastro de Notas
+        </v-card-title>
+        <v-card>
+          <v-row class="pa-2 ma-2" aling="center">
+            <v-col col="3">
+              <v-text-field
+                v-model="form.cnpj"
+                placeholder="CNPJ do estabelecimento"
+              ></v-text-field>
+            </v-col>
 
-      </v-row>
-      
+            <v-col col="5">
+             <v-select
+                :items="canalCompra"
+                v-model="form.canalCompra"
+                label="Canal de compra do produto"
+                solo
+              ></v-select>
+            </v-col>
 
 
-      <input type="button" value="seila" @click="teste()"/>
-    </form>
-    {{form.cnpj}}
-  </div>
+          </v-row>
+          <v-row aling="center">
+            <v-col>
+              {{ form}}
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-container>
+    </v-form>
+    
+  
 </template>
 
 <script>
@@ -35,7 +55,12 @@ export default {
           p2:0,
           p3:0
         }
-      }
+      },
+      canalCompra: [
+        'Site',
+        'Varejo',
+        'Telefone'
+      ]
     }
   },
   methods:{
