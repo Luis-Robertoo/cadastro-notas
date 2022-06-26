@@ -43,15 +43,28 @@
                 ></v-text-field>
               </v-col>
             </v-row>
-            <v-row>
-              <v-sheet height="190">
-                  <v-calendar
-                  v-model="teste"
-                  >
-                  </v-calendar>
-              </v-sheet>
+            <v-row class="px-1 ma-1">
+              <v-col cols="5" class="pa-1">
+                <v-sheet height="200" width="250">
+                    <v-calendar
+                    v-model="teste"
+                    type="month"
+                    >
+                    </v-calendar>
+                </v-sheet>
+              </v-col>
+              <v-col cols="7" class="pa-1">
+
+                <v-data-table
+                  :headers="headListados"
+                  :items="listados"
+                  class="elevation-2"
+                  dense
+                ></v-data-table>
+              </v-col>
+
+
             </v-row>
-             aqui {{ teste}}
             <v-row class="px-1 ma-1">
               <v-col cols="4" class="pa-1">
                 <v-select
@@ -74,7 +87,7 @@
               </v-col>
               <v-col cols="5" class="pa-1">
                 <v-btn 
-                  @click="addProduto()" 
+                  @click="addProduto(),addLista()" 
                   block
                   elevation="2"
                   x-large
@@ -144,14 +157,18 @@
            {{ form }}
       </v-form>
     </v-container>
-    
-    
-  
 </template>
 
 <script>
+
+import todo from '../services/todo'
+
 export default {
   name: 'FormularioNotas',
+
+  mounted(){
+    this.pegaLista()
+  },
 
   data(){
     return {
@@ -186,8 +203,14 @@ export default {
         {text: 'Produto', align: 'left', value: 'nome', sortable: false},
         {text: 'Quantidade', align: 'center', value: 'quantidade', sortable: false},
       ],
+      headListados:[
+        {text: 'Feito', value: 'done', sortable: false},
+        {text: 'Texto', value: 'title', sortable: false},
+        {text: 'Identificador', value: 'id', sortable: false}
+      ],
       rulesfileSize: [value => !value || value.size < 2000000 || 'O arquivo é maior que 2 MB!'],
       rulesQtdMinima: [v => (v && v > 0) || 'Minimo de 1 produto'],
+      listados: [],
       teste: null
     }
   },
@@ -202,6 +225,18 @@ export default {
     },
     deletar(item){
       this.form.produtos.splice(this.form.produtos.indexOf(item), 1)
+    },
+    pegaLista(){
+      todo.listar().then(resp => {
+        resp != null ? this.listados = resp.data : null
+      })
+    }, 
+    addLista(){
+      todo.enviar(this.form.cnpj, true).then(resp => {
+        resp != null ? this.pegaLista() : null
+        this.form.cnpj = null
+        this.pegaLista()
+      })
     }
   }
 }
