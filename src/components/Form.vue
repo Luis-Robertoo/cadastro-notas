@@ -46,12 +46,12 @@
             <v-row>
               <v-sheet height="190">
                   <v-calendar
-
+                  v-model="teste"
                   >
                   </v-calendar>
               </v-sheet>
             </v-row>
-
+             aqui {{ teste}}
             <v-row class="px-1 ma-1">
               <v-col cols="4" class="pa-1">
                 <v-select
@@ -188,7 +188,8 @@ export default {
       ],
       rulesfileSize: [value => !value || value.size < 2000000 || 'O arquivo é maior que 2 MB!'],
       rulesQtdMinima: [v => (v && v > 0) || 'Minimo de 1 produto'],
-    }//v => (v && v.length <= 10) || 'Name must be less than 10 characters'
+      teste: null
+    }
   },
   methods:{
     
