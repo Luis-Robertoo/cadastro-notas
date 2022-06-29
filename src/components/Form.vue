@@ -44,30 +44,10 @@
               </v-col>
             </v-row>
             <v-row class="px-1 ma-1">
-              <v-col cols="5" class="pa-1">
-                <v-sheet height="200" width="250">
-                    <v-calendar
-                    v-model="teste"
-                    type="month"
-                    >
-                    </v-calendar>
-                </v-sheet>
-              </v-col>
-              <v-col cols="7" class="pa-1">
-
-                <v-data-table
-                  :headers="headListados"
-                  :items="listados"
-                  class="elevation-2"
-                  dense
-                ></v-data-table>
-              </v-col>
-
-
-            </v-row>
-            <v-row class="px-1 ma-1">
               <v-col cols="4" class="pa-1">
                 <v-select
+                  item-text="nome"
+                  item-value="id"
                   :items="produtos"
                   v-model="prodSelecionado"
                   label="Selecione os produtos comprados"
@@ -87,7 +67,7 @@
               </v-col>
               <v-col cols="5" class="pa-1">
                 <v-btn 
-                  @click="addProduto(),addLista()" 
+                  @click="addProduto()" 
                   block
                   elevation="2"
                   x-large
@@ -154,20 +134,21 @@
               </v-col>
             </v-row>
           </v-card>
-           {{ form }}
+          
       </v-form>
     </v-container>
 </template>
 
 <script>
 
-import todo from '../services/todo'
+import listarProdutos from '../services/produtos'
+import salvarNota from '../services/notas'
 
 export default {
   name: 'FormularioNotas',
 
   mounted(){
-    this.pegaLista()
+    this.GetProdutos()
   },
 
   data(){
@@ -178,11 +159,7 @@ export default {
         dataCompra: null,
         numNota: null,
         file: null,
-        produtos: [
-          {nome: 'Barra 150g', quantidade: 2},
-          {nome: 'Meio amargo 70g', quantidade: 3},
-          {nome: 'Amargo 100g', quantidade: 1},
-        ],
+        produtos: [],
         valorTotalNota: null
       },
       canalCompra: [
@@ -190,13 +167,7 @@ export default {
         'Varejo',
         'Telefone'
       ],
-      produtos: [
-        'Barra 150g',
-        'Ovo 300g',
-        'Meio amargo 70g',
-        'Amargo 100g',
-        'Meio amargo 200g',
-      ],
+      produtos: [],
       prodSelecionado: {},
       qtdProduto: null,
       cabecalhos: [
@@ -218,24 +189,28 @@ export default {
     
     addProduto(){
       if(this.qtdProduto != null && this.qtdProduto >= 0 && this.prodSelecionado != null){
-        this.form.produtos.push({nome:this.prodSelecionado, quantidade:this.qtdProduto})
+        let nomeProduto = this.produtos.filter(ele => ele.id === this.prodSelecionado)[0].nome
+        
+        this.form.produtos.push({nome:nomeProduto, id:this.prodSelecionado, quantidade:this.qtdProduto})
         this.qtdProduto = null
         this.prodSelecionado = null
       }
     },
+
     deletar(item){
       this.form.produtos.splice(this.form.produtos.indexOf(item), 1)
     },
-    pegaLista(){
-      todo.listar().then(resp => {
-        resp != null ? this.listados = resp.data : null
+ 
+    GetProdutos(){
+      listarProdutos.listarProdutos().then(resp => {
+        resp != null ? this.produtos = resp.data : null
       })
-    }, 
-    addLista(){
-      todo.enviar(this.form.cnpj, true).then(resp => {
-        resp != null ? this.pegaLista() : null
-        this.form.cnpj = null
-        this.pegaLista()
+    },
+
+    enviar(){
+      
+      salvarNota.cadastrarNotas(this.form).then(ele => {
+        console.log(ele)
       })
     }
   }

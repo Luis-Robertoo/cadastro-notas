@@ -9,5 +9,4 @@ export default {
     enviar: (dado, feito) => {
         return http.post('todos', {title: dado , done: feito})
     }
-
 }
