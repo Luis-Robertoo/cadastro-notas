@@ -5,20 +5,8 @@
 npm install
 ```
 
-### Compiles and hot-reloads for development
+### Rodar localmente (Necessario que a porta 8080 do local host esteja disponivel)
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
