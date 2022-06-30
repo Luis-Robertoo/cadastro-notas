@@ -160,7 +160,8 @@ export default {
     this.GetProdutos()
   },
   computed: {
-    totalItens(){
+    totalItens:{
+      
       return 42
     }
   },
@@ -228,7 +229,7 @@ export default {
     enviar(){
       
       if(this.$refs.formCad.validate()){
-        console.log(this.form)
+        console.log(this.form, this.totalItens)
       }
       //salvarNota.cadastrarNotas(this.form).then(ele => {
         //console.log(ele)
