@@ -17,6 +17,8 @@
                   placeholder="CNPJ do estabelecimento"
                   label="CNPJ do estabelecimento"
                   outlined
+                  :rules="rules.obrigatorio"
+                  required
                 ></v-text-field>
               </v-col>
               <v-col cols="4" class="pa-1">
@@ -25,6 +27,8 @@
                   v-model="form.canalCompra"
                   label="Canal de compra do produto"
                   outlined
+                  :rules="rules.obrigatorio"
+                  required
                 ></v-select>
               </v-col>
               <v-col cols="2" class="pa-1">
@@ -32,6 +36,8 @@
                   v-model="form.dataCompra"
                   label="Data de compra"
                   outlined
+                  :rules="rules.obrigatorio"
+                  required
                 ></v-text-field>
               </v-col>
               <v-col cols="3" class="pa-1">
@@ -40,6 +46,8 @@
                   placeholder="Número do cupom fiscal"
                   label="Número do cupom fiscal"
                   outlined
+                  :rules="rules.obrigatorio"
+                  required
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -53,12 +61,10 @@
                   label="Selecione os produtos comprados"
                   placeholder="Selecione os produtos comprados"
                   outlined
-                  :rules="[prodSelecionado != null ? true : 'Selecione um produto']"
                 ></v-select>
               </v-col>
               <v-col cols="3" class="pa-1">
                 <v-text-field
-                  :rules="rulesQtdMinima"
                   v-model="qtdProduto"
                   placeholder="Quantidade"
                   label="Quantidade"
@@ -104,10 +110,12 @@
                   placeholder="Valor total de produtos nessa nota"
                   label="Valor total de produtos nessa nota"
                   outlined
+                  :rules="rules.obrigatorio"
+                  required
                 ></v-text-field>
                 <v-file-input
                   class="mb-0 pb-0"
-                  :rules="rulesfileSize"
+                  :rules="[rules.fileSize, rules.obrigatorio]"
                   v-model="form.file"
                   accept=".pdf, image/jpeg, image/jpg"
                   placeholder="Upload cupom fiscal"
@@ -115,6 +123,7 @@
                   prepend-icon=""
                   label="Upload cupom fiscal"
                   outlined
+                  required
                   :show-size="true"
                   messages="Extensões aceitas: PDF, JPEG, JPG. com tamanho máximo de 2MB"
                 ></v-file-input>
@@ -150,6 +159,11 @@ export default {
   mounted(){
     this.GetProdutos()
   },
+  computed: {
+    totalItens(){
+      return 42
+    }
+  },
 
   data(){
     return {
@@ -168,7 +182,7 @@ export default {
         'Telefone'
       ],
       produtos: [],
-      prodSelecionado: {},
+      prodSelecionado: null,
       qtdProduto: null,
       cabecalhos: [
         {text: 'Produto', align: 'left', value: 'nome', sortable: false},
@@ -179,10 +193,14 @@ export default {
         {text: 'Texto', value: 'title', sortable: false},
         {text: 'Identificador', value: 'id', sortable: false}
       ],
-      rulesfileSize: [value => !value || value.size < 2000000 || 'O arquivo é maior que 2 MB!'],
-      rulesQtdMinima: [v => (v && v > 0) || 'Minimo de 1 produto'],
+      rules:{
+        obrigatorio: [v => !!v || 'Campo Obrigatorio'],
+        fileSize: [v => !v || v.size < 2000000 || 'O arquivo é maior que 2 MB!'],
+        QtdMinima: [v => (v && v > 0) || 'Minimo de 1 produto'],
+        selecione: [v => (v && typeof(v) != Number) || 'Selecione uma opção']
+      },
       listados: [],
-      teste: null
+      
     }
   },
   methods:{
@@ -209,9 +227,12 @@ export default {
 
     enviar(){
       
-      salvarNota.cadastrarNotas(this.form).then(ele => {
-        console.log(ele)
-      })
+      if(this.$refs.formCad.validate()){
+        console.log(this.form)
+      }
+      //salvarNota.cadastrarNotas(this.form).then(ele => {
+        //console.log(ele)
+      //})
     }
   }
 }
