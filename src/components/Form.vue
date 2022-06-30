@@ -160,10 +160,7 @@ export default {
     this.GetProdutos()
   },
   computed: {
-    totalItens:{
-      
-      return 42
-    }
+   
   },
 
   data(){
